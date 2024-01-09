@@ -53,6 +53,17 @@ public class BloodDonor extends User {
     @Column
     private String bloodworkFilePath;
 
+    @Column
+    private LocalDate lastDonationDate;
+
+    public LocalDate getLastDonationDate() {
+        return lastDonationDate;
+    }
+
+    public void setLastDonationDate(LocalDate lastDonationDate) {
+        this.lastDonationDate = lastDonationDate;
+    }
+
     @OneToMany(mappedBy = "bloodDonor")
     private List<Donation> donations;
 

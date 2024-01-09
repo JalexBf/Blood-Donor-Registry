@@ -14,4 +14,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     RegistrationRepository findByBloodDonor(BloodDonor bloodDonor);
 
     List<RegistrationRepository> findByStatus(Status status);
+
+
 }

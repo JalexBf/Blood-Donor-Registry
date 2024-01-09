@@ -23,18 +23,18 @@ public class User {
     private Long userId;
 
     @Column
-    @NotEmpty
-    @Size(min = 4, max = 10)
+    @NotEmpty(message = "Username is required")
+    @Size(min = 4, max = 10, message = "Username must be between 4 and 10 characters")
     private String username;
 
     @Column
-    @NotEmpty
-    @Size(min = 8, max = 16)
+    @NotEmpty(message = "Password is required")
+    @Size(min = 8, max = 16, message = "Password must be between 8 and 16 characters")
     private String password;
 
     @Column
-    @Email
-    @NotEmpty
+    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email is required")
     private String email;
 
     @ManyToMany
