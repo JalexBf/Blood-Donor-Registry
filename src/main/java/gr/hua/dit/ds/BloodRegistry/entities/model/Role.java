@@ -27,9 +27,12 @@ public class Role {
     @Size(min = 2, max = 50)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"))
     @Column(name = "permission")
     private Set<String> permissions;
 
+    public Role(String name) {
+        this.name = name;
+    }
 }

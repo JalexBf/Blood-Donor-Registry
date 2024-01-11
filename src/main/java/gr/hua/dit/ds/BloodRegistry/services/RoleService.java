@@ -16,9 +16,10 @@ public class RoleService {
     private RoleRepository roleRepository;
 
     public Role findByName(String name) {
-
-        return roleRepository.findByName(name);
+        return roleRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
     }
+
 
     @Transactional
     public Role createRole(Role role) {

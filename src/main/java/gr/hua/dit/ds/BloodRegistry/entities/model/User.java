@@ -45,4 +45,8 @@ public class User {
     )
     private Set<Role> roles;
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
