@@ -30,7 +30,7 @@ public class CustomUserPrincipal implements UserDetails {
 
             // Add permissions to authorities
             authorities.addAll(role.getPermissions().stream()
-                    .map(permission -> (GrantedAuthority) () -> permission)
+                    .map(permission -> (GrantedAuthority) () -> String.valueOf(permission))
                     .collect(Collectors.toList()));
         }
         return authorities;

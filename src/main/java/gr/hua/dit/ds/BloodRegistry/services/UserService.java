@@ -6,6 +6,7 @@ import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.RoleRepository;
 import gr.hua.dit.ds.BloodRegistry.repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
@@ -20,29 +21,32 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Transactional
-    public User createUserWithRoles(User user, Set<Long> roleIds) {
-        Set<Role> roles = new HashSet<>();
-        for (Long roleId : roleIds) {
-            roleRepository.findById(roleId).ifPresent(roles::add);
-        }
-        user.setRoles(roles);
-        return userRepository.save(user);
-    }
-
     @Transactional
     public User createUser(User user) {
-
+        if (!isValidUser(user)) {
+            throw new IllegalArgumentException("Invalid user data");
+        }
         return userRepository.save(user);
     }
 
     @Transactional
-    public User updateUser(User user) {
-
-        return userRepository.save(user);
+    public User updateUser(Long userId, User updatedUser) {
+        return userRepository.findById(userId).map(existingUser -> {
+            if (updatedUser.getUsername() != null) {
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getEmail() != null && EmailValidator.getInstance().isValid(updatedUser.getEmail())) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
+            if (updatedUser.getPassword() != null) {
+                existingUser.setPassword(updatedUser.getPassword());
+            }
+            if (updatedUser.getRole() != null) {
+                existingUser.setRole(updatedUser.getRole());
+            }
+            // You can add more fields to update as needed
+            return userRepository.save(existingUser);
+        }).orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
     }
 
     public User findUserById(Long id) {
@@ -51,18 +55,25 @@ public class UserService {
     }
 
     public List<User> findAllUsers() {
-
         return userRepository.findAll();
     }
 
     @Transactional
     public void deleteUser(Long id) {
-
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+        userRepository.delete(user);
     }
 
-    public boolean existsByEmail(String username) {
-        return userRepository.existsByEmail(username);
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private boolean isValidUser(User user) {
+        EmailValidator emailValidator = EmailValidator.getInstance();
+        return user.getUsername() != null && !user.getUsername().trim().isEmpty()
+                && user.getEmail() != null && emailValidator.isValid(user.getEmail())
+                && user.getPassword() != null && !user.getPassword().trim().isEmpty()
+                && user.getRole() != null && !user.getRole().trim().isEmpty();
     }
 }
-

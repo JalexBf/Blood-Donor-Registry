@@ -1,18 +1,19 @@
 package gr.hua.dit.ds.BloodRegistry.repositories;
 
 import gr.hua.dit.ds.BloodRegistry.entities.model.User;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
+@Hidden
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByUserId(Long userId);
+    Optional<User> findByUsername(String username);
+    Boolean existsByUsername(String username);
 
-    Optional<User> findByEmail(String email);
-
-    boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 
 }

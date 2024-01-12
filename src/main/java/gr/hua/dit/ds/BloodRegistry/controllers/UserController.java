@@ -22,9 +22,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
-        user.setUserId(id);
-        return ResponseEntity.ok(userService.updateUser(user));
+        return ResponseEntity.ok(userService.updateUser(id, user));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {

@@ -9,7 +9,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,6 +39,7 @@ public class BloodDonor extends User {
     private BloodType bloodtype;
 
     @Column
+    @NotNull
     private long amka;
 
     @Column
@@ -51,7 +53,7 @@ public class BloodDonor extends User {
     private String phone;
 
     @Column
-    private String bloodworkFilePath;
+    private String bloodwork;
 
     @Column
     private LocalDate lastDonationDate;

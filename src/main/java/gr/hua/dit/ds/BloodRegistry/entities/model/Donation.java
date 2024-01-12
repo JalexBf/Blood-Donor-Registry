@@ -7,7 +7,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 public class Donation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long donationId;
 
     @Column
@@ -23,7 +24,7 @@ public class Donation {
     private LocalDate donationDate;
 
     @ManyToOne
-    @JoinColumn(name = "blood_donor_id, nullable = false")
+    @JoinColumn(name = "blood_donor_id", nullable = false)
     private BloodDonor bloodDonor;
 
 }
