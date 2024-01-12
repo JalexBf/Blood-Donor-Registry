@@ -64,3 +64,6 @@ CREATE TABLE registrations (
                                FOREIGN KEY (blood_donor_id) REFERENCES blood_donors(donor_id),
                                FOREIGN KEY (secretariat_id) REFERENCES secretariats(secretariat_id)
 );
+
+
+INSERT INTO users (username, email, password) VALUES ('jason', 'it218142@hua.gr', '123456789');
