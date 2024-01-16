@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.IRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
-public class Role {
+public class Role implements IRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

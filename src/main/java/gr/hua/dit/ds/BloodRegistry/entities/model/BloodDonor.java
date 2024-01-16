@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.IBloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.BloodType;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
 import jakarta.persistence.*;
@@ -9,12 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
-public class BloodDonor extends User {
+public class BloodDonor extends User implements IBloodDonor {
 
     @Column
     @NotEmpty
@@ -56,8 +58,18 @@ public class BloodDonor extends User {
     @Column
     private LocalDate lastDonationDate;
 
+    @Override
+    public BloodType getBloodType() {
+        return null;
+    }
+
     public LocalDate getLastDonationDate() {
         return lastDonationDate;
+    }
+
+    @Override
+    public void setBloodType(BloodType bloodtype) {
+
     }
 
     public void setLastDonationDate(LocalDate lastDonationDate) {
@@ -70,4 +82,43 @@ public class BloodDonor extends User {
     @OneToOne(mappedBy = "bloodDonor", cascade = CascadeType.ALL)
     private Registration registration;
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public void setAccountNonExpired(boolean accountNonExpired) {
+
+    }
+
+    @Override
+    public void setAccountNonLocked(boolean accountNonLocked) {
+
+    }
+
+    @Override
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+    }
 }
