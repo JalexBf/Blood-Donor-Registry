@@ -8,8 +8,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-public interface IBloodDonor extends IUser {
+public interface IBloodDonor {
 
+    // Getters
     String getFirstname();
     String getLastname();
     Sex getSex();
@@ -23,6 +24,7 @@ public interface IBloodDonor extends IUser {
     List<Donation> getDonations();
     Registration getRegistration();
 
+    // Setters
     void setFirstname(String firstname);
     void setLastname(String lastname);
     void setSex(Sex sex);

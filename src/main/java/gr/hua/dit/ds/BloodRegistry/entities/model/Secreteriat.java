@@ -31,43 +31,4 @@ public class Secreteriat extends User implements ISecreteriat {
     @OneToMany(mappedBy = "secreteriat", cascade = CascadeType.ALL)
     private List<Registration> registrations;
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setAccountNonExpired(boolean accountNonExpired) {
-
-    }
-
-    @Override
-    public void setAccountNonLocked(boolean accountNonLocked) {
-
-    }
-
-    @Override
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
-    }
 }

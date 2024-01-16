@@ -58,20 +58,6 @@ public class BloodDonor extends User implements IBloodDonor {
     @Column
     private LocalDate lastDonationDate;
 
-    @Override
-    public BloodType getBloodType() {
-        return null;
-    }
-
-    public LocalDate getLastDonationDate() {
-        return lastDonationDate;
-    }
-
-    @Override
-    public void setBloodType(BloodType bloodtype) {
-
-    }
-
     public void setLastDonationDate(LocalDate lastDonationDate) {
         this.lastDonationDate = lastDonationDate;
     }
@@ -83,42 +69,11 @@ public class BloodDonor extends User implements IBloodDonor {
     private Registration registration;
 
     @Override
-    public boolean isAccountNonExpired() {
-        return false;
+    public BloodType getBloodType() {
+        return this.bloodtype;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setAccountNonExpired(boolean accountNonExpired) {
-
-    }
-
-    @Override
-    public void setAccountNonLocked(boolean accountNonLocked) {
-
-    }
-
-    @Override
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
+    public void setBloodType(BloodType bloodtype) {
+        this.bloodtype = bloodtype;
     }
 }
