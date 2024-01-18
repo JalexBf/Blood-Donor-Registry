@@ -17,28 +17,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserTest {
 
     private User user;
+    private Validator validator;
 
     @BeforeEach
     void setUp() {
+        // Initialize User with test data
         user = new User();
-        // Initialize with some test data
         user.setUserId(1L);
-        user.setUsername("testUser");
-        user.setPassword("testPassword");
-        user.setEmail("test@example.com");
+        user.setUsername("test");
+        user.setPassword("testpassword");
+        user.setEmail("test@test.com");
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         user.setEnabled(true);
-    }
 
+        // Validator setup
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     @Test
     void testGettersAndSetters() {
         assertEquals(1L, user.getUserId());
-        assertEquals("testUser", user.getUsername());
-        assertEquals("testPassword", user.getPassword());
-        assertEquals("test@example.com", user.getEmail());
+        assertEquals("test", user.getUsername());
+        assertEquals("testpassword", user.getPassword());
+        assertEquals("test@test.com", user.getEmail());
         assertTrue(user.isAccountNonExpired());
         assertTrue(user.isAccountNonLocked());
         assertTrue(user.isCredentialsNonExpired());
@@ -46,14 +50,29 @@ class UserTest {
     }
 
     @Test
-    void validationConstraints() {
-        User invalidUser = new User();
-        invalidUser.setEmail("invalidEmail");
+    void testUserWithInvalidEmail() {
+        user.setEmail("invalid");
+        Set<ConstraintViolation<User>> violations = validator.validateProperty(user, "email");
+        assertFalse(violations.isEmpty(), "Invalid email should result validation error");
+    }
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<User>> violations = validator.validate(invalidUser);
+    @Test
+    void testUserWithEmptyUsername() {
+        user.setUsername("");
+        Set<ConstraintViolation<User>> violations = validator.validateProperty(user, "username");
+        assertFalse(violations.isEmpty(), "Empty username should result validation error");
+    }
 
-        assertFalse(violations.isEmpty()); // Expecting validation errors
+    @Test
+    void testUserWithNullPassword() {
+        user.setPassword(null);
+        Set<ConstraintViolation<User>> violations = validator.validateProperty(user, "password");
+        assertFalse(violations.isEmpty(), "Null password should result validation error");
+    }
+
+    @Test
+    void testValidUser() {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        assertTrue(violations.isEmpty(), "No violations should be present for valid user");
     }
 }

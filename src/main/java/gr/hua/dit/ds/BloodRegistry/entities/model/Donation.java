@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
+@Table(name = "donations")
 public class Donation implements IDonation {
 
     @Id
@@ -30,6 +31,5 @@ public class Donation implements IDonation {
     @ManyToOne
     @JoinColumn(name = "blood_donor_id, nullable = false")
     private BloodDonor bloodDonor;
-
 
 }

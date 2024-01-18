@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
+@Table(name = "registrations")
 public class Registration implements IRegistration {
 
     @Id

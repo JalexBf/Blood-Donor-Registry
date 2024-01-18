@@ -1,6 +1,7 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
 import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.IRole;
+import gr.hua.dit.ds.BloodRegistry.entities.enums.Permissions;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.security.Permission;
 import java.util.Set;
 
 @Data
@@ -17,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
+@Table(name = "roles")
 public class Role implements IRole {
 
     @Id
@@ -28,9 +31,15 @@ public class Role implements IRole {
     @Size(min = 2, max = 50)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(targetClass = Permissions.class)
     @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "permission")
-    private Set<String> permissions;
+    @NotNull // Add this annotation
+    private Set<Permissions> permissions;
 
+    @Override
+    public void setPermissions(Set<Permissions> permissions) {
+        this.permissions = permissions;
+    }
 }

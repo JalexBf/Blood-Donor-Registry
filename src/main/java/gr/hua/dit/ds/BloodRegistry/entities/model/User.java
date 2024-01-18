@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
+@Table(name = "`users")
 public class User {
 
     @Id
@@ -24,12 +25,12 @@ public class User {
 
     @Column
     @NotEmpty(message = "Username is required")
-    @Size(min = 4, max = 10, message = "Username must be between 4 and 10 characters")
+    @Size(min = 3, max = 15, message = "Username must be between 3 and 15 characters")
     private String username;
 
     @Column
     @NotEmpty(message = "Password is required")
-    @Size(min = 8, max = 16, message = "Password must be between 8 and 16 characters")
+    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
     private String password;
 
     @Column

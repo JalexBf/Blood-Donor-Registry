@@ -17,8 +17,8 @@ CREATE TABLE roles (
 -- User Table
 CREATE TABLE users (
                        user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       username VARCHAR(50) NOT NULL,
-                       password VARCHAR(100) NOT NULL,
+                       username VARCHAR(15) NOT NULL,
+                       password VARCHAR(15) NOT NULL,
                        email VARCHAR(100) UNIQUE NOT NULL,
                        role_id BIGINT NOT NULL,
                        is_account_non_expired BOOLEAN NOT NULL DEFAULT TRUE,

@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
+@Table(name = "secreteriats")
 public class Secreteriat extends User implements ISecreteriat {
 
     @Column
