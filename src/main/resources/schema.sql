@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS blood_donors CASCADE;
 DROP TABLE IF EXISTS secretariats CASCADE;
 DROP TABLE IF EXISTS user_roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+<<<<<<< HEAD
 
 -- User Table
 CREATE TABLE users (
@@ -20,6 +21,34 @@ CREATE TABLE users (
 
 -- Role Column added in User table
 ALTER TABLE users ADD COLUMN role VARCHAR(50) NOT NULL;
+=======
+DROP TABLE IF EXISTS roles CASCADE;
+
+
+CREATE TABLE roles (
+                       role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       name VARCHAR(50) NOT NULL
+);
+
+
+-- User Table
+CREATE TABLE users (
+                       user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       username VARCHAR(15) NOT NULL,
+                       password VARCHAR(15) NOT NULL,
+                       email VARCHAR(100) UNIQUE NOT NULL,
+                       role_id BIGINT NOT NULL,
+                       is_account_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
+                       is_account_non_locked BOOLEAN NOT NULL DEFAULT TRUE,
+                       is_credentials_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
+                       is_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                       password_last_changed_date DATE,
+                       failed_login_attempts INT DEFAULT 0,
+                       account_lock_date DATE,
+                       FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+>>>>>>> backup-2b0394c
 
 -- Blood Donors Table
 CREATE TABLE blood_donors (
@@ -63,7 +92,11 @@ CREATE TABLE registrations (
                                secretariat_id BIGINT NOT NULL,
                                FOREIGN KEY (blood_donor_id) REFERENCES blood_donors(donor_id),
                                FOREIGN KEY (secretariat_id) REFERENCES secretariats(secretariat_id)
+<<<<<<< HEAD
 );
 
 
 INSERT INTO users (username, email, password) VALUES ('jason', 'it218142@hua.gr', '123456789');
+=======
+);
+>>>>>>> backup-2b0394c

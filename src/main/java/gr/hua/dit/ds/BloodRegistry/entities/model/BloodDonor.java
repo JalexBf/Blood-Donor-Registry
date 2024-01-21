@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.IBloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.BloodType;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
 import jakarta.persistence.*;
@@ -15,7 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
-public class BloodDonor extends User {
+@Table(name = "blood_donors")
+public class BloodDonor extends User implements IBloodDonor {
 
     @Column
     @NotEmpty
@@ -58,8 +60,7 @@ public class BloodDonor extends User {
     @Column
     private LocalDate lastDonationDate;
 
-    public LocalDate getLastDonationDate() {
-        return lastDonationDate;
+    public BloodDonor(String john, String doe, Sex sex, LocalDate of, BloodType bloodType, long l, String athens, String number, Object o, Object o1) {
     }
 
     public void setLastDonationDate(LocalDate lastDonationDate) {
@@ -72,4 +73,12 @@ public class BloodDonor extends User {
     @OneToOne(mappedBy = "bloodDonor", cascade = CascadeType.ALL)
     private Registration registration;
 
+    @Override
+    public BloodType getBloodType() {
+        return this.bloodtype;
+    }
+
+    public void setBloodType(BloodType bloodtype) {
+        this.bloodtype = bloodtype;
+    }
 }

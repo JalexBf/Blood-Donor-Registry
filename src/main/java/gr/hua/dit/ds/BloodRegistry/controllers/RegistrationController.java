@@ -19,11 +19,6 @@ public class RegistrationController {
         return ResponseEntity.ok(registrationService.createRegistration(registration));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Registration> updateRegistration(@PathVariable Long id, @RequestBody Registration registration) {
-        registration.setRegistrationId(id);
-        return ResponseEntity.ok(registrationService.updateRegistration(registration));
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Registration> getRegistration(@PathVariable Long id) {

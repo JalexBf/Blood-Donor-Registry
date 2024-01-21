@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.ISecreteriat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
-public class Secreteriat extends User {
+@Table(name = "secreteriats")
+public class Secreteriat extends User implements ISecreteriat {
 
     @Column
     @NotEmpty
@@ -28,4 +30,8 @@ public class Secreteriat extends User {
     @OneToMany(mappedBy = "secreteriat", cascade = CascadeType.ALL)
     private List<Registration> registrations;
 
+    public Long getSecreteriatId() {
+
+        return this.getUserId();
+    }
 }

@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.IRegistration;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
-public class Registration {
+@Table(name = "registrations")
+public class Registration implements IRegistration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,4 +36,7 @@ public class Registration {
     @ManyToOne
     @JoinColumn(name = "secreteriat_id", nullable = false)
     private Secreteriat secreteriat;
+
+    public Registration(Status status) {
+    }
 }
