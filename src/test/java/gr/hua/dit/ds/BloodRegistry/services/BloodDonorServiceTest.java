@@ -9,12 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class BloodDonorServiceTest {
@@ -25,36 +26,53 @@ public class BloodDonorServiceTest {
     @InjectMocks
     private BloodDonorService bloodDonorService;
 
-    private BloodDonor maleDonor, femaleDonor; // Assuming BloodDonor class has these fields
+    private BloodDonor maleDonor, femaleDonor;
 
     @BeforeEach
     public void setup() {
         maleDonor = new BloodDonor();
         femaleDonor = new BloodDonor();
 
-        // Assuming setters for sex, lastDonationDate, etc., exist
+        maleDonor.setUserId(1L);
         maleDonor.setSex(Sex.MALE);
-        maleDonor.setLastDonationDate(LocalDate.now().minusMonths(4)); // Male donor last donated 4 months ago
+        maleDonor.setLastDonationDate(LocalDate.of(2024, 1, 15)); // Donated less than 3 months ago
 
+        femaleDonor.setUserId(2L);
         femaleDonor.setSex(Sex.FEMALE);
-        femaleDonor.setLastDonationDate(LocalDate.now().minusMonths(5)); // Female donor last donated 5 months ago
+        femaleDonor.setLastDonationDate(LocalDate.of(2023, 8, 30)); // Donated more than 4 months ago
     }
 
     @Test
     public void testFindEligibleDonorsForNotification() {
-        // Mocking the repository to return a list of donors
         when(bloodDonorRepository.findAll()).thenReturn(Arrays.asList(maleDonor, femaleDonor));
 
         List<BloodDonor> eligibleDonors = bloodDonorService.findEligibleDonorsForNotification();
 
-        // Assertions
         assertNotNull(eligibleDonors);
-        assertTrue(eligibleDonors.contains(maleDonor));
-        assertFalse(eligibleDonors.contains(femaleDonor)); // Female donor is not yet eligible
+        assertTrue(eligibleDonors.contains(femaleDonor), "Female donor should be eligible");
+        assertFalse(eligibleDonors.contains(maleDonor), "Male donor should not be eligible");
 
-        // Verify interaction with the repository
         verify(bloodDonorRepository).findAll();
     }
 
-    // Other tests for methods like isEligibleForDonation, etc.
+    @Test
+    public void testIsEligibleForDonation() {
+        // Example test case for a male donor
+        BloodDonor testMaleDonor = new BloodDonor();
+        testMaleDonor.setUserId(3L);
+        testMaleDonor.setSex(Sex.MALE);
+        testMaleDonor.setLastDonationDate(LocalDate.of(2024, 1, 1));
+
+        boolean maleEligibility = bloodDonorService.isEligibleForDonation(testMaleDonor, LocalDate.of(2024, 4, 1));
+        assertFalse(maleEligibility, "Male donor should not be eligible");
+
+        // Example test case for a female donor
+        BloodDonor testFemaleDonor = new BloodDonor();
+        testFemaleDonor.setUserId(4L);
+        testFemaleDonor.setSex(Sex.FEMALE);
+        testFemaleDonor.setLastDonationDate(LocalDate.of(2023, 11, 1));
+
+        boolean femaleEligibility = bloodDonorService.isEligibleForDonation(testFemaleDonor, LocalDate.of(2024, 4, 1));
+        assertTrue(femaleEligibility, "Female donor should be eligible");
+    }
 }

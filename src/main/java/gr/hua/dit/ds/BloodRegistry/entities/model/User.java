@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -38,16 +40,18 @@ public class User {
     @NotEmpty(message = "Email is required")
     private String email;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
+
+    // One role per user
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    private LocalDate passwordLastChangedDate;
+    private int failedLoginAttempts;
+    private LocalDate accountLockDate;
 
 }

@@ -32,4 +32,8 @@ public class Secreteriat extends User implements ISecreteriat {
     @OneToMany(mappedBy = "secreteriat", cascade = CascadeType.ALL)
     private List<Registration> registrations;
 
+    public Long getSecreteriatId() {
+
+        return this.getUserId();
+    }
 }

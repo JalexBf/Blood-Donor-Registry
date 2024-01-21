@@ -9,15 +9,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-
 import java.util.Arrays;
 import java.util.Optional;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @ExtendWith(MockitoExtension.class)
-public class SecreteriatControllerTest {
+public class SecretariatControllerTest {
 
     @Mock
     private SecreteriatService secreteriatService;
@@ -34,6 +33,7 @@ public class SecreteriatControllerTest {
         // Initialize other necessary fields of Secreteriat
     }
 
+
     @Test
     void testCreateSecreteriat() {
         when(secreteriatService.createSecreteriat(any(Secreteriat.class))).thenReturn(secreteriat);
@@ -43,6 +43,7 @@ public class SecreteriatControllerTest {
         verify(secreteriatService).createSecreteriat(any(Secreteriat.class));
     }
 
+
     @Test
     void testUpdateSecreteriat() {
         when(secreteriatService.updateSecreteriat(any(Secreteriat.class))).thenReturn(secreteriat);
@@ -51,6 +52,7 @@ public class SecreteriatControllerTest {
         assertNotNull(response.getBody());
         verify(secreteriatService).updateSecreteriat(any(Secreteriat.class));
     }
+
 
     @Test
     void testGetSecreteriat() {
@@ -69,6 +71,7 @@ public class SecreteriatControllerTest {
         verify(secreteriatService).findSecreteriatById(anyLong());
     }
 
+
     @Test
     void testGetAllSecreteriats() {
         when(secreteriatService.findAllSecreteriats()).thenReturn(Arrays.asList(secreteriat));
@@ -77,6 +80,7 @@ public class SecreteriatControllerTest {
         assertNotNull(response.getBody());
         verify(secreteriatService).findAllSecreteriats();
     }
+
 
     @Test
     void testDeleteSecreteriat() {

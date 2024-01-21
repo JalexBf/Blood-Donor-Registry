@@ -26,6 +26,7 @@ public class DonationService {
 
     @Transactional
     public Donation createDonation(Donation donation) {
+
         Status donorStatus = donation.getBloodDonor().getRegistration().getStatus();
 
         if (donation.getBloodDonor().getRegistration().getStatus() != Status.APPROVED) {

@@ -6,10 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
 import java.util.EnumSet;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @DataJpaTest
 public class RoleRepoTest {
@@ -20,48 +19,69 @@ public class RoleRepoTest {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Test
-    public void testCreateAndFindRole() {
-        Role role = new Role();
-        role.setName("ROLE_TEST");
-        role.setPermissions(EnumSet.of(Permissions.READ_USER));
 
-        role = entityManager.persistFlushFind(role);
-        Role foundRole = entityManager.find(Role.class, role.getRoleId());
+    /**
+     * Test creation and retrieval of a role by an admin.
+     * Ensure that a newly created role is persisted correctly and can be retrieved.
+     */
+    @Test
+    public void adminCreatesAndFindsRole() {
+        // New admin
+        Role adminCreatedRole = new Role();
+        adminCreatedRole.setName("SECRETARIAT_ROLE");
+        adminCreatedRole.setPermissions(EnumSet.of(Permissions.READ_USER, Permissions.WRITE_USER));
+
+        // Persist and retrieverole
+        adminCreatedRole = entityManager.persistFlushFind(adminCreatedRole);
+        Role foundRole = entityManager.find(Role.class, adminCreatedRole.getRoleId());
 
         assertNotNull(foundRole);
-        assertEquals("ROLE_TEST", foundRole.getName());
-        assertTrue(foundRole.getPermissions().contains(Permissions.READ_USER));
+        assertEquals("SECRETARIAT_ROLE", foundRole.getName());
+        assertTrue(foundRole.getPermissions().containsAll(EnumSet.of(Permissions.READ_USER, Permissions.WRITE_USER)));
     }
 
+
+    /**
+     * Test update of a role by an admin.
+     * Verify that changes made to a role are persisted and retrieved correctly.
+     */
     @Test
-    public void testUpdateRole() {
-        Role role = new Role();
-        role.setName("ROLE_UPDATE_TEST");
-        role.setPermissions(EnumSet.of(Permissions.READ_USER));
+    public void adminUpdatesRole() {
+        Role roleToBeUpdated = new Role();
+        roleToBeUpdated.setName("BLOOD_DONOR_ROLE");
+        roleToBeUpdated.setPermissions(EnumSet.of(Permissions.DELETE_USER));
 
-        role = entityManager.persistFlushFind(role);
-        role.setName("ROLE_UPDATED");
-        role.setPermissions(EnumSet.of(Permissions.WRITE_USER));
+        roleToBeUpdated = entityManager.persistFlushFind(roleToBeUpdated);
 
-        Role updatedRole = entityManager.persistFlushFind(role);
-        assertEquals("ROLE_UPDATED", updatedRole.getName());
-        assertTrue(updatedRole.getPermissions().contains(Permissions.WRITE_USER));
+        // Admin updating the role
+        roleToBeUpdated.setName("BLOOD_DONOR_ROLE");
+        roleToBeUpdated.setPermissions(EnumSet.of(Permissions.READ_USER));
+
+        Role updatedRole = entityManager.persistFlushFind(roleToBeUpdated);
+
+        assertEquals("BLOOD_DONOR_ROLE", updatedRole.getName());
+        assertTrue(updatedRole.getPermissions().contains(Permissions.READ_USER));
+        assertFalse(updatedRole.getPermissions().contains(Permissions.DELETE_USER));
     }
 
+
+    /**
+     * Test the deletion of a role by an admin.
+     * Ensures that a deleted role is removed from persistence.
+     */
     @Test
-    public void testDeleteRole() {
-        Role role = new Role();
-        role.setName("ROLE_DELETE_TEST");
-        role.setPermissions(EnumSet.of(Permissions.DELETE_USER));
+    public void adminDeletesRole() {
+        Role roleToDelete = new Role();
+        roleToDelete.setName("BLOOD_DONOR_ROLE");
+        roleToDelete.setPermissions(EnumSet.of(Permissions.DELETE_USER));
 
-        role = entityManager.persistFlushFind(role);
-        Long roleId = role.getRoleId();
+        roleToDelete = entityManager.persistFlushFind(roleToDelete);
 
-        entityManager.remove(entityManager.find(Role.class, roleId));
+        // Admin deleting role
+        entityManager.remove(roleToDelete);
         entityManager.flush();
 
-        Role deletedRole = entityManager.find(Role.class, roleId);
+        Role deletedRole = entityManager.find(Role.class, roleToDelete.getRoleId());
         assertNull(deletedRole);
     }
 }

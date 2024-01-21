@@ -5,6 +5,7 @@ import gr.hua.dit.ds.BloodRegistry.entities.model.Registration;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.RegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -23,22 +24,27 @@ public class RegistrationService {
 
 
     @Transactional
-    public Registration updateRegistration(Registration registration) {
-        return registrationRepository.save(registration);
-    }
-
-
-    @Transactional
     public void deleteRegistration(Long registrationId) {
         registrationRepository.deleteById(registrationId);
     }
 
 
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
     @Transactional
     public Registration approveRegistration(Long registrationId) {
         Registration registration = registrationRepository.findById(registrationId)
                 .orElseThrow(() -> new NotFoundException("Registration not found with id: " + registrationId));
         registration.setStatus(Status.APPROVED);
+        return registrationRepository.save(registration);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
+    @Transactional
+    public Registration rejectRegistration(Long registrationId) {
+        Registration registration = registrationRepository.findById(registrationId)
+                .orElseThrow(() -> new NotFoundException("Registration not found with id: " + registrationId));
+        registration.setStatus(Status.REJECTED);
         return registrationRepository.save(registration);
     }
 
@@ -53,10 +59,8 @@ public class RegistrationService {
     }
 
 
-    public List<RegistrationRepository> findAllRegistrationsByStatus(Status status) {
+    public List<Registration> findAllRegistrationsByStatus(Status status) {
         return registrationRepository.findByStatus(status);
     }
-
-
 
 }

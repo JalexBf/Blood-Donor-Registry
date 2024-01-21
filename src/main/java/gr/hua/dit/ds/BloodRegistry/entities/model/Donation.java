@@ -29,7 +29,7 @@ public class Donation implements IDonation {
     private LocalDate donationDate;
 
     @ManyToOne
-    @JoinColumn(name = "blood_donor_id, nullable = false")
+    @JoinColumn(name = "blood_donor_id", nullable = false)
     private BloodDonor bloodDonor;
 
 }

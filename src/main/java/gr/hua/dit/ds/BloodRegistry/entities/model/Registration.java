@@ -35,4 +35,7 @@ public class Registration implements IRegistration {
     @ManyToOne
     @JoinColumn(name = "secreteriat_id", nullable = false)
     private Secreteriat secreteriat;
+
+    public Registration(Status status) {
+    }
 }

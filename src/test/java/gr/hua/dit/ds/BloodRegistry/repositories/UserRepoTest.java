@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import static org.junit.jupiter.api.Assertions.*;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class UserRepoTest {
@@ -18,75 +19,113 @@ public class UserRepoTest {
     private UserRepository userRepository;
 
     @Test
-    void findByUserId_WhenUserExists() {
-        User newUser = new User();
-        newUser.setUsername("test");
-        newUser.setPassword("123123123123");
-        newUser.setEmail("user@user.com");
+    void adminCreatesUserAccount() {
+        // Simulating admin creating a user account
+        User adminCreatedUser = new User();
+        adminCreatedUser.setUsername("donor");
+        adminCreatedUser.setPassword("password444");
+        adminCreatedUser.setEmail("donor@g.com");
 
-        User savedUser = entityManager.persistFlushFind(newUser);
+        User savedUser = userRepository.save(adminCreatedUser);
+        assertNotNull(savedUser.getUserId());
+        assertEquals("donor", savedUser.getUsername());
+
+        // Verifying that the created user account can be retrieved
         User foundUser = userRepository.findByUserId(savedUser.getUserId());
-
         assertNotNull(foundUser);
-        assertEquals("test", foundUser.getUsername());
+        assertEquals("donor", foundUser.getUsername());
     }
 
+
     @Test
-    void findByEmail_WhenEmailExists() {
-        User newUser = new User();
-        newUser.setUsername("another");
-        newUser.setPassword("password456");
-        newUser.setEmail("another@a.com");
+    void findByEmail() {
+        // Creating a user by admin
+        User adminCreatedUser = new User();
+        adminCreatedUser.setUsername("thisuser");
+        adminCreatedUser.setPassword("password222");
+        adminCreatedUser.setEmail("thisuser@r.com");
 
-        entityManager.persistAndFlush(newUser);
-        User foundUser = userRepository.findByEmail("another@a.com");
+        entityManager.persistAndFlush(adminCreatedUser);
 
+        // Verifying that the user can be found by email
+        User foundUser = userRepository.findByEmail("thisuser@r.com");
         assertNotNull(foundUser);
-        assertEquals("another", foundUser.getUsername());
+        assertEquals("thisuser", foundUser.getUsername());
     }
 
+
     @Test
-    void existsByEmail_WhenEmailExists() {
-        User newUser = new User();
-        newUser.setUsername("rds");
-        newUser.setPassword("789789789789");
-        newUser.setEmail("email@e.com");
+    void existsByEmail() {
+        // Creating a user by admin
+        User adminCreatedUser = new User();
+        adminCreatedUser.setUsername("user");
+        adminCreatedUser.setPassword("password");
+        adminCreatedUser.setEmail("user@g.com");
 
-        entityManager.persistAndFlush(newUser);
-        boolean exists = userRepository.existsByEmail("email@e.com");
+        entityManager.persistAndFlush(adminCreatedUser);
 
+        // Checking if the user exists by email
+        boolean exists = userRepository.existsByEmail("user@g.com");
         assertTrue(exists);
     }
 
-    @Test
-    void saveUser_AndFindById() {
-        User user = new User();
-        user.setUsername("saveUser");
-        user.setPassword("savePass");
-        user.setEmail("save@example.com");
-
-        User savedUser = userRepository.save(user);
-        assertNotNull(savedUser);
-        assertNotNull(savedUser.getUserId());
-
-        User foundUser = userRepository.findById(savedUser.getUserId()).orElse(null);
-        assertNotNull(foundUser);
-        assertEquals("saveUser", foundUser.getUsername());
-    }
 
     @Test
-    void deleteUser_AndCheckNotExist() {
-        User user = new User();
-        user.setUsername("deleteUser");
-        user.setPassword("deletePass");
-        user.setEmail("delete@example.com");
+    void deleteUser_ByAdmin() {
+        // Creating user by admin
+        User userToDelete = new User();
+        userToDelete.setUsername("gsadg");
+        userToDelete.setPassword("4tr4ttttttttt");
+        userToDelete.setEmail("fsda@vds.fds");
 
-        User savedUser = entityManager.persistFlushFind(user);
+        User savedUser = entityManager.persistFlushFind(userToDelete);
         assertNotNull(savedUser);
 
+        // Admin deleting user
         userRepository.deleteById(savedUser.getUserId());
         User deletedUser = userRepository.findById(savedUser.getUserId()).orElse(null);
 
         assertNull(deletedUser);
+    }
+
+
+    @Test
+    public void testFindByUsername() {
+        // Create and persist new User
+        User newUser = new User();
+        newUser.setUsername("user");
+        newUser.setPassword("testpass");
+        newUser.setEmail("user@j.com");
+        entityManager.persistAndFlush(newUser);
+
+        // Retrieve user
+        User foundUser = userRepository.findByUsername("user").orElse(null);
+
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getUsername()).isEqualTo("user");
+    }
+
+
+    @Test
+    public void testUpdateUserDetails() {
+        // Create and persist new User
+        User user = new User();
+        user.setUsername("oldusername");
+        user.setPassword("password");
+        user.setEmail("oldemail@example.com");
+        entityManager.persistAndFlush(user);
+
+        // Retrieve and update user
+        User retrievedUser = userRepository.findById(user.getUserId()).orElse(null);
+        assertNotNull(retrievedUser);
+        retrievedUser.setUsername("newusername");
+        retrievedUser.setEmail("emailnew@example.com");
+        userRepository.save(retrievedUser);
+
+        // Retrieve user again to verify updates
+        User updatedUser = userRepository.findById(user.getUserId()).orElse(null);
+        assertNotNull(updatedUser);
+        assertEquals("newusername", updatedUser.getUsername());
+        assertEquals("emailnew@example.com", updatedUser.getEmail());
     }
 }

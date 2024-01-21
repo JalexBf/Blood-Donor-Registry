@@ -25,6 +25,9 @@ CREATE TABLE users (
                        is_account_non_locked BOOLEAN NOT NULL DEFAULT TRUE,
                        is_credentials_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
                        is_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                       password_last_changed_date DATE,
+                       failed_login_attempts INT DEFAULT 0,
+                       account_lock_date DATE,
                        FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
