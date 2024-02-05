@@ -29,14 +29,14 @@ public class SecreteriatService {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public Secreteriat updateSecreteriat(Secreteriat secreteriat) {
-        secreteriatRepository.findById(secreteriat.getSecreteriatId())
-                .orElseThrow(() -> new NotFoundException("Secreteriat not found with id: " + secreteriat.getSecreteriatId()));
+        secreteriatRepository.findById(secreteriat.getUserId())
+                .orElseThrow(() -> new NotFoundException("Secreteriat not found with id: " + secreteriat.getUserId()));
         // Add validation logic here
         return secreteriatRepository.save(secreteriat);
     }
 
     public Optional<Secreteriat> findSecreteriatById(Long id) {
-        return secreteriatRepository.findById(id);
+        return secreteriatRepository.findByUserId(id);
     }
 
 

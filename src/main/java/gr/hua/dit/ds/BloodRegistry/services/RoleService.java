@@ -17,20 +17,11 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-<<<<<<< HEAD
-    public Role findByName(String name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-    }
-
-
-=======
     public Optional<Role> findByName(String name) {
         return roleRepository.findByName(name);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
->>>>>>> backup-2b0394c
     @Transactional
     public Role createRole(Role role) {
         return roleRepository.save(role);

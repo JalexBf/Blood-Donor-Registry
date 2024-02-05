@@ -7,10 +7,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.aspectj.apache.bcel.generic.LOOKUPSWITCH;
 
 import java.time.LocalDate;
 
+@Data
 public class UserDto {
+
+
+    private Long userId;
+
+    private Long secretariatId;
+
+    private Long bloodDonorId;
 
     @NotEmpty
     @Size(min = 3, max = 15)
@@ -25,7 +35,7 @@ public class UserDto {
     private String email;
 
     @NotNull
-    private Roles role; // ROLE_BLOOD_DONOR or ROLE_SECRETARIAT
+    private Long role; // ROLE_BLOOD_DONOR or ROLE_SECRETARIAT
 
 
     private String firstname;
@@ -39,107 +49,5 @@ public class UserDto {
     private LocalDate lastDonationDate;
 
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Roles getRole() {
-        return role;
-    }
-
-    public void setRole(Roles role) {
-        this.role = role;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public Sex getSex() {
-        return sex;
-    }
-
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
-
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    public BloodType getBloodType() {
-        return bloodType;
-    }
-
-    public void setBloodType(BloodType bloodType) {
-        this.bloodType = bloodType;
-    }
-
-    public long getAmka() {
-        return amka;
-    }
-
-    public void setAmka(long amka) {
-        this.amka = amka;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public LocalDate getLastDonationDate() {
-        return lastDonationDate;
-    }
-
-    public void setLastDonationDate(LocalDate lastDonationDate) {
-        this.lastDonationDate = lastDonationDate;
-    }
 }

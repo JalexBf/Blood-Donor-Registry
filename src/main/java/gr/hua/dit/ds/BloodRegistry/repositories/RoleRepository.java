@@ -6,15 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-<<<<<<< HEAD
-@Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
-=======
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
->>>>>>> backup-2b0394c
     Optional<Role> findByName(String name);
 }
-

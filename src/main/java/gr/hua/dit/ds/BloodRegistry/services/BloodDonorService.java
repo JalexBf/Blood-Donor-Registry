@@ -46,7 +46,7 @@ public class BloodDonorService {
 
     public Optional<BloodDonor> findBloodDonorById(Long id) {
 
-        return bloodDonorRepository.findById(id);
+        return bloodDonorRepository.findByUserId(id);
     }
 
 
