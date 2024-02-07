@@ -1,14 +1,3 @@
--- -- Drop statements only during testing period
---DROP TABLE IF EXISTS role_permissions CASCADE;
---DROP TABLE IF EXISTS registrations CASCADE;
---DROP TABLE IF EXISTS donations CASCADE;
---DROP TABLE IF EXISTS blood_donors CASCADE;
---DROP TABLE IF EXISTS secreteriats CASCADE;
---DROP TABLE IF EXISTS users CASCADE;
---DROP TABLE IF EXISTS roles CASCADE;
-
-
-
 CREATE TABLE IF NOT EXISTS roles (
                                      role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                      name VARCHAR(50) NOT NULL
@@ -74,9 +63,7 @@ CREATE TABLE IF NOT EXISTS registrations (
                                              status VARCHAR(20) NOT NULL,
     submission_date DATE NOT NULL,
     blood_donor_id BIGINT NOT NULL,
-    --secretariat_id BIGINT,
     FOREIGN KEY (blood_donor_id) REFERENCES blood_donors(donor_id)
-    --FOREIGN KEY (secretariat_id) REFERENCES secretariats(secretariat_id)
     );
 
 INSERT INTO roles (name)
@@ -90,6 +77,3 @@ SELECT 'ROLE_BLOOD_DONOR'
 INSERT INTO roles (name)
 SELECT 'ROLE_SECRETARIAT'
     WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'ROLE_SECRETARIAT');
-
---INSERT INTO users (username, password, email, role_id, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled)
---VALUES ('adminuser', 'password', 'admin@example.com', 1, TRUE, TRUE, TRUE, TRUE);

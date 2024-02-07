@@ -4,7 +4,7 @@ import gr.hua.dit.ds.BloodRegistry.DTO.RegistrationdDto;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Status;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Registration;
-import gr.hua.dit.ds.BloodRegistry.entities.model.Secreteriat;
+import gr.hua.dit.ds.BloodRegistry.entities.model.Secretariat;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.BloodDonorRepository;
 import gr.hua.dit.ds.BloodRegistry.repositories.RegistrationRepository;
@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,17 +28,25 @@ public class RegistrationService {
     BloodDonorRepository bloodDonorRepository;
     @Autowired
     SecreteriatService secreteriatService;
+
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_BLOOD_DONOR')")
     public Registration createRegistration(RegistrationdDto registrationDto) {
-        BloodDonor bloodDonor=bloodDonorRepository.findByUserId(registrationDto.getId()).orElseThrow(()->new RuntimeException("not found"));
-        List<Secreteriat> sec = secreteriatService.findAllSecreteriats();
-        Registration registeration = new Registration();
-        registeration.setBloodDonor(bloodDonor);
-        registeration.setSecreteriat(sec.get(0));
-        registeration.setSubmissionDate(LocalDate.now());
-        registeration.setStatus(Status.AWAITING);
-        return registrationRepository.saveAndFlush(registeration);
+        BloodDonor bloodDonor = bloodDonorRepository.findByUserId(registrationDto.getId())
+                .orElseThrow(() -> new RuntimeException("Blood Donor not found"));
+
+        // Check if a registration already exists
+        Optional<Registration> existingRegistration = registrationRepository.findByBloodDonor(bloodDonor);
+        if (existingRegistration.isPresent()) {
+            // User has already registered
+            throw new IllegalStateException("Registration already exists for this user");
+        }
+
+        Registration registration = new Registration();
+        registration.setBloodDonor(bloodDonor);
+        registration.setSubmissionDate(LocalDate.now());
+        registration.setStatus(Status.AWAITING);
+        return registrationRepository.saveAndFlush(registration);
     }
 
 

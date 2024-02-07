@@ -4,7 +4,7 @@ import gr.hua.dit.ds.BloodRegistry.DTO.UserDto;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Roles;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Role;
-import gr.hua.dit.ds.BloodRegistry.entities.model.Secreteriat;
+import gr.hua.dit.ds.BloodRegistry.entities.model.Secretariat;
 import gr.hua.dit.ds.BloodRegistry.entities.model.User;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.BloodDonorRepository;
@@ -18,10 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service
@@ -87,8 +85,8 @@ public class UserService {
            return bloodDonorRepository.saveAndFlush(existingBloodDonor);
        }
 
-        if(existingUser instanceof Secreteriat){
-            Secreteriat existingSecretariat= secreteriatRepository.findByUserId(userId).orElseThrow(()-> new NotFoundException("Blood donor not found"));
+        if(existingUser instanceof Secretariat){
+            Secretariat existingSecretariat= secreteriatRepository.findByUserId(userId).orElseThrow(()-> new NotFoundException("Blood donor not found"));
             existingSecretariat.setUsername(userDto.getUsername());
             existingSecretariat.setEmail(userDto.getEmail());
             existingSecretariat.setFirstname(userDto.getFirstname());

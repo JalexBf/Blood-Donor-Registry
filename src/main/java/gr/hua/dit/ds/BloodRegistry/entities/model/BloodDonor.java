@@ -6,6 +6,8 @@ import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
 import jakarta.persistence.*;
 import lombok.*;
 import jakarta.validation.constraints.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,8 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@SuperBuilder
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "blood_donors")
+
 public class BloodDonor extends User implements IBloodDonor {
 
     @Column
@@ -41,7 +45,6 @@ public class BloodDonor extends User implements IBloodDonor {
     private BloodType bloodtype;
 
     @Column
-    @NotNull
     private long amka;
 
     @Column
@@ -55,7 +58,7 @@ public class BloodDonor extends User implements IBloodDonor {
     private String phone;
 
     @Column
-    private String bloodwork;
+    private String bloodworkFilePath;
 
     @Column
     private LocalDate lastDonationDate;

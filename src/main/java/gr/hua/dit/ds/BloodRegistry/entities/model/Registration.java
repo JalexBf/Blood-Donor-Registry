@@ -8,13 +8,13 @@ import lombok.*;
 import java.time.LocalDate;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "registrations")
+@Builder
 public class Registration implements IRegistration {
 
     @Id
@@ -33,10 +33,12 @@ public class Registration implements IRegistration {
     @JoinColumn(name = "blood_donor_id", unique = true, nullable = false)
     private BloodDonor bloodDonor;
 
-    @ManyToOne
-    @JoinColumn(name = "secreteriat_id", nullable = false)
-    private Secreteriat secreteriat;
+    //@ManyToOne
+    //@JoinColumn(name = "secretariat_id", nullable = true)
+    //private Secretariat secretariat; // Make sure this matches the repository method
+
 
     public Registration(Status status) {
     }
+
 }

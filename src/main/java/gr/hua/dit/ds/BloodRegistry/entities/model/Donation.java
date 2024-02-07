@@ -12,8 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,7 +21,7 @@ import java.util.List;
 public class Donation implements IDonation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long donationId;
 
     @Column

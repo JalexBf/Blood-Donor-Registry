@@ -3,16 +3,12 @@ package gr.hua.dit.ds.BloodRegistry.security;
 import gr.hua.dit.ds.BloodRegistry.DTO.SignInRequest;
 import gr.hua.dit.ds.BloodRegistry.DTO.SignInResponse;
 import gr.hua.dit.ds.BloodRegistry.DTO.UserDto;
-import gr.hua.dit.ds.BloodRegistry.entities.enums.BloodType;
-import gr.hua.dit.ds.BloodRegistry.entities.enums.Roles;
-import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Role;
-import gr.hua.dit.ds.BloodRegistry.entities.model.Secreteriat;
+import gr.hua.dit.ds.BloodRegistry.entities.model.Secretariat;
 import gr.hua.dit.ds.BloodRegistry.entities.model.User;
 import gr.hua.dit.ds.BloodRegistry.repositories.RoleRepository;
 import gr.hua.dit.ds.BloodRegistry.repositories.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseCookie;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
 
 @Service
 public class AuthenticationService {
@@ -79,7 +73,7 @@ public class AuthenticationService {
 
         Role role =roleRepository.findById(userDto.getRole()).orElseThrow(()->new RuntimeException("role not found"));
 
-        Secreteriat secreteriat=Secreteriat.builder()
+        Secretariat secretariat = Secretariat.builder()
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .email(userDto.getEmail())
@@ -92,7 +86,7 @@ public class AuthenticationService {
                 .firstname(userDto.getFirstname())
                 .lastname(userDto.getLastname())
                 .build();
-        return userRepository.saveAndFlush(secreteriat);
+        return userRepository.saveAndFlush(secretariat);
 
 
     }

@@ -1,21 +1,27 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.hua.dit.ds.BloodRegistry.entities.Interfaces.ISecreteriat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@SuperBuilder
 @EqualsAndHashCode(callSuper=false)
-@Table(name = "secreteriats")
-public class Secreteriat extends User implements ISecreteriat {
+@Table(name = "secretariats")
+
+public class Secretariat extends User implements ISecreteriat {
 
     @Column
     @NotEmpty
@@ -27,11 +33,9 @@ public class Secreteriat extends User implements ISecreteriat {
     @Size(min = 2, max = 50)
     private String lastname;
 
-    @OneToMany(mappedBy = "secreteriat", cascade = CascadeType.ALL)
-    private List<Registration> registrations;
+    //@OneToMany(mappedBy = "secretariat", cascade = CascadeType.ALL)
+    //@JsonIgnore
+    //private List<Registration> registrations;
 
-    public Long getSecreteriatId() {
 
-        return this.getUserId();
-    }
 }

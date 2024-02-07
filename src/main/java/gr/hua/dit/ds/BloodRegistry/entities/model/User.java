@@ -1,39 +1,30 @@
 package gr.hua.dit.ds.BloodRegistry.entities.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-<<<<<<< HEAD
 import lombok.*;
-
-=======
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
->>>>>>> backup-2b0394c
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@SuperBuilder
 @EqualsAndHashCode(callSuper=false)
-<<<<<<< HEAD
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
-        })
-=======
-@Table(name = "`users")
->>>>>>> backup-2b0394c
-public class User {
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +38,7 @@ public class User {
 
     @Column
     @NotEmpty(message = "Password is required")
-    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
+    @JsonIgnore
     private String password;
 
     @Column
@@ -55,68 +46,38 @@ public class User {
     @NotEmpty(message = "Email is required")
     private String email;
 
-<<<<<<< HEAD
-    @ManyToMany
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-=======
 
     // One role per user
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-    private boolean enabled;
-    private LocalDate passwordLastChangedDate;
-    private int failedLoginAttempts;
-    private LocalDate accountLockDate;
->>>>>>> backup-2b0394c
-
-    private Set<Role> roles;
-    private String role;
+    @Column(nullable = true)
+    @JsonIgnore
     private boolean isAccountNonExpired;
+    @JsonIgnore
+    @Column(nullable = true)
     private boolean isAccountNonLocked;
+    @JsonIgnore
+    @Column(nullable = true)
     private boolean isCredentialsNonExpired;
+    @JsonIgnore
+    @Column(nullable = true)
     private boolean isEnabled;
+    @JsonIgnore
+    @Column(nullable = true)
+    private LocalDate passwordLastChangedDate;
+    @JsonIgnore
+    @Column(nullable = true)
+    private int failedLoginAttempts;
+    @JsonIgnore
+    @Column(nullable = true)
+    private LocalDate accountLockDate;
+    @Column(nullable = true)
 
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
-
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        isAccountNonExpired = accountNonExpired;
-    }
-
-    public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        isAccountNonLocked = accountNonLocked;
-    }
-
-    public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
-    }
-
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        isCredentialsNonExpired = credentialsNonExpired;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 }

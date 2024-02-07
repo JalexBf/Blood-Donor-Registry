@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.controllers;
 
+import gr.hua.dit.ds.BloodRegistry.DTO.RegistrationdDto;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Registration;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.services.RegistrationService;
@@ -15,8 +16,8 @@ public class RegistrationController {
     private RegistrationService registrationService;
 
     @PostMapping
-    public ResponseEntity<Registration> createRegistration(@RequestBody Registration registration) {
-        return ResponseEntity.ok(registrationService.createRegistration(registration));
+    public ResponseEntity<Registration> createRegistration(@RequestBody RegistrationdDto registrationdDto) {
+        return ResponseEntity.ok(registrationService.createRegistration(registrationdDto));
     }
 
 

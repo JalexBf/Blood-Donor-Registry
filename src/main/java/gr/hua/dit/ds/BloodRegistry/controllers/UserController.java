@@ -1,7 +1,12 @@
 package gr.hua.dit.ds.BloodRegistry.controllers;
 
+import gr.hua.dit.ds.BloodRegistry.DTO.SignInRequest;
+import gr.hua.dit.ds.BloodRegistry.DTO.SignInResponse;
+import gr.hua.dit.ds.BloodRegistry.DTO.UserDto;
 import gr.hua.dit.ds.BloodRegistry.entities.model.User;
+import gr.hua.dit.ds.BloodRegistry.security.AuthenticationService;
 import gr.hua.dit.ds.BloodRegistry.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +19,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-<<<<<<< HEAD
-    @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
-    }
-=======
->>>>>>> backup-2b0394c
+    @Autowired
+    private AuthenticationService authenticationService;
 
 
     @GetMapping("/{id}")
@@ -41,9 +36,32 @@ public class UserController {
     }
 
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> editUser (@PathVariable Long id,@RequestBody UserDto userDto){
+        return ResponseEntity.ok(userService.updateUser(userDto,id));
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signUpBloodDonor")
+    public ResponseEntity<User> signUpBloodDonor(@RequestBody UserDto userDto){
+        return ResponseEntity.ok(authenticationService.signUpBloodDonor(userDto));
+    }
+
+    @PostMapping("/signUpSecretariat")
+    public ResponseEntity<User> signUpSecretariat(@RequestBody UserDto userDto){
+        return ResponseEntity.ok(authenticationService.signUpSecretariat(userDto));
+    }
+
+
+
+    @PostMapping("/signIn")
+    private ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest signInRequest, HttpServletResponse response){
+        return ResponseEntity.ok(authenticationService.signIn(signInRequest,response));
     }
 }

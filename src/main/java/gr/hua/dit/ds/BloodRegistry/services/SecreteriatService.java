@@ -1,6 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.services;
 
-import gr.hua.dit.ds.BloodRegistry.entities.model.Secreteriat;
+import gr.hua.dit.ds.BloodRegistry.entities.model.Secretariat;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.SecreteriatRepository;
 import jakarta.transaction.Transactional;
@@ -20,27 +20,27 @@ public class SecreteriatService {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
-    public Secreteriat createSecreteriat(Secreteriat secreteriat) {
+    public Secretariat createSecreteriat(Secretariat secretariat) {
         // Add validation logic here
-        return secreteriatRepository.save(secreteriat);
+        return secreteriatRepository.save(secretariat);
     }
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
-    public Secreteriat updateSecreteriat(Secreteriat secreteriat) {
-        secreteriatRepository.findById(secreteriat.getUserId())
-                .orElseThrow(() -> new NotFoundException("Secreteriat not found with id: " + secreteriat.getUserId()));
+    public Secretariat updateSecreteriat(Secretariat secretariat) {
+        secreteriatRepository.findById(secretariat.getUserId())
+                .orElseThrow(() -> new NotFoundException("Secreteriat not found with id: " + secretariat.getUserId()));
         // Add validation logic here
-        return secreteriatRepository.save(secreteriat);
+        return secreteriatRepository.save(secretariat);
     }
 
-    public Optional<Secreteriat> findSecreteriatById(Long id) {
+    public Optional<Secretariat> findSecreteriatById(Long id) {
         return secreteriatRepository.findByUserId(id);
     }
 
 
-    public List<Secreteriat> findAllSecreteriats() {
+    public List<Secretariat> findAllSecreteriats() {
         return secreteriatRepository.findAll();
     }
 
