@@ -24,9 +24,15 @@ public class RegistrationService {
     private RegistrationRepository registrationRepository;
 
     @Autowired
+<<<<<<< Updated upstream
     BloodDonorRepository bloodDonorRepository;
     @Autowired
     SecreteriatService secreteriatService;
+=======
+    private UserService userService;
+
+
+>>>>>>> Stashed changes
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_BLOOD_DONOR')")
     public Registration createRegistration(RegistrationdDto registrationDto) {
@@ -52,8 +58,14 @@ public class RegistrationService {
     public Registration approveRegistration(Long registrationId) {
         Registration registration = registrationRepository.findById(registrationId)
                 .orElseThrow(() -> new NotFoundException("Registration not found with id: " + registrationId));
+
         registration.setStatus(Status.APPROVED);
-        return registrationRepository.save(registration);
+        Registration savedRegistration = registrationRepository.save(registration);
+
+        // Update the applicant's role to BLOOD_DONOR upon approval
+        userService.updateUserRole(registration.getBloodDonor().getUsername(), "BLOOD_DONOR");
+
+        return savedRegistration;
     }
 
 

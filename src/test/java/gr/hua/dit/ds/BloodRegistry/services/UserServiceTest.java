@@ -12,10 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -71,16 +73,45 @@ public class UserServiceTest {
 
 
     @Test
-    void updateUser() {
-        when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
+    void updateUser_Success() {
+        Long userId = 1L;
+        String newEmail = "newemail@new.com";
+        String newUsername = "new";
 
-        User updatedUser = userService.updateUser(user, true);
+        User existingUser = new User();
+        existingUser.setUserId(userId);
+        existingUser.setEmail("oldemail@old.com");
+        existingUser.setUsername("old");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+
+        User updatedUser = userService.updateUser(userId, newEmail, newUsername);
 
         assertNotNull(updatedUser);
-        verify(userRepository).save(user);
-        assertEquals("testuser", updatedUser.getUsername());
+        assertEquals(newEmail, updatedUser.getEmail());
+        assertEquals(newUsername, updatedUser.getUsername());
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).save(existingUser);
     }
+
+
+    @Test
+    void updateUserContactInfo_UserNotFound() {
+        Long nonExistentUserId = 99L;
+        when(userRepository.findById(nonExistentUserId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () ->
+                userService.updateUser(nonExistentUserId, "newemail@new.com", "new")
+        );
+
+        String expectedMessage = "User not found with id: " + nonExistentUserId;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+
 
 
     @Test
@@ -107,10 +138,10 @@ public class UserServiceTest {
     @Test
     void changePassword() {
         when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode("newPassword")).thenReturn("encodedNewPassword");
+        when(passwordEncoder.encode("newpassword")).thenReturn("encodedNewPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        userService.changePassword(user.getUserId(), "newPassword");
+        userService.changePassword(user.getUserId(), "newpassword");
 
         verify(userRepository).save(user);
         assertEquals("encodedNewPassword", user.getPassword());
@@ -139,32 +170,47 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUser_Success() {
-        User updatedUser = new User();
-        updatedUser.setUserId(1L); // Ensure this is not null
-        updatedUser.setEmail("updated@k.com");
-        updatedUser.setUsername("update");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    void updateUserRole_Success() {
+        String newRoleName = Roles.ROLE_BLOOD_DONOR.name();
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(roleRepository.findByName(newRoleName)).thenReturn(Optional.of(new Role(2L, newRoleName, Set.of())));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.updateUser(updatedUser, true);
+        userService.updateUserRole(user.getUsername(), newRoleName);
 
-        assertNotNull(result);
-        assertEquals("updated@k.com", result.getEmail());
-        assertEquals("update", result.getUsername());
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
+        verify(roleRepository, times(1)).findByName(newRoleName);
+        verify(userRepository, times(1)).save(user);
+        assertEquals(newRoleName, user.getRole().getName());
+    }
+
+
+
+    @Test
+    void updateUserRole_UserNotFound() {
+        String username = "nonexistentuser";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
+            userService.updateUserRole(username, Roles.ROLE_BLOOD_DONOR.name());
+        });
+
+        String expectedMessage = "User Not Found with username: " + username;
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
 
     @Test
-    void updateUser_UserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+    void updateUserRole_RoleNotFound() {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(roleRepository.findByName("NON_EXISTENT_ROLE")).thenReturn(Optional.empty());
 
-        User updatedUser = new User();
-        updatedUser.setUserId(99L);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.updateUserRole(user.getUsername(), "NON_EXISTENT_ROLE");
+        });
 
-        assertThrows(NotFoundException.class, () -> userService.updateUser(updatedUser, true));
+        String expectedMessage = "Role not found with name: NON_EXISTENT_ROLE";
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
 

@@ -14,7 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+<<<<<<< Updated upstream
 >>>>>>> backup-2b0394c
+=======
+import java.util.Collection;
+>>>>>>> Stashed changes
 import java.util.Set;
 
 @Getter
@@ -24,6 +28,7 @@ import java.util.Set;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(callSuper=false)
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 @Table(name = "users",
         uniqueConstraints = {
@@ -33,6 +38,9 @@ import java.util.Set;
 =======
 @Table(name = "`users")
 >>>>>>> backup-2b0394c
+=======
+@Table(name = "users")
+>>>>>>> Stashed changes
 public class User {
 
     @Id

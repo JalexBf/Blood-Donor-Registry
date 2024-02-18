@@ -60,8 +60,6 @@ public class BloodDonor extends User implements IBloodDonor {
     @Column
     private LocalDate lastDonationDate;
 
-    public BloodDonor(String john, String doe, Sex sex, LocalDate of, BloodType bloodType, long l, String athens, String number, Object o, Object o1) {
-    }
 
     public void setLastDonationDate(LocalDate lastDonationDate) {
         this.lastDonationDate = lastDonationDate;
