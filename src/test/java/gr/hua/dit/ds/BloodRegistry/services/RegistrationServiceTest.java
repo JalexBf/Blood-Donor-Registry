@@ -1,6 +1,7 @@
 package gr.hua.dit.ds.BloodRegistry.services;
 
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Status;
+import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Registration;
 import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.RegistrationRepository;
@@ -22,6 +23,9 @@ public class RegistrationServiceTest {
 
     @Mock
     private RegistrationRepository registrationRepository;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private RegistrationService registrationService;
@@ -46,18 +50,26 @@ public class RegistrationServiceTest {
 
 
     @Test
-    void approveRegistration() {
+    void approveRegistration_UpdatesUserRole() {
+        Long registrationId = 1L;
         Registration registration = new Registration();
         registration.setStatus(Status.AWAITING);
+        // Assuming you have a method in Registration to get the username of the applicant
+        String applicantUsername = "username";
+        registration.setBloodDonor(new BloodDonor());
+        registration.getBloodDonor().setUsername(applicantUsername);
 
-        when(registrationRepository.findById(anyLong())).thenReturn(Optional.of(registration));
+        when(registrationRepository.findById(registrationId)).thenReturn(Optional.of(registration));
         when(registrationRepository.save(any(Registration.class))).thenReturn(registration);
+        doNothing().when(userService).updateUserRole(applicantUsername, "BLOOD_DONOR");
 
-        Registration updated = registrationService.approveRegistration(1L);
+        Registration updated = registrationService.approveRegistration(registrationId);
 
         assertThat(updated.getStatus()).isEqualTo(Status.APPROVED);
         verify(registrationRepository, times(1)).save(registration);
+        verify(userService, times(1)).updateUserRole(applicantUsername, "BLOOD_DONOR");
     }
+
 
 
     @Test

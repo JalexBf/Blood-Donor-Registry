@@ -41,14 +41,23 @@ public class AdminController {
     /**
      * Updates a user account.
      */
-    @PutMapping("/update-user/{id}")
+    @PutMapping("/update-user/{id}/contact-info")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
-        user.setUserId(id);
-        userService.updateUser(user, true); // Passing 'true' because the operation is performed by an admin
-        return ResponseEntity.ok("User updated successfully");
+    public ResponseEntity<?> updateUserContactInfo(@PathVariable Long id,
+                                                   @RequestParam String email,
+                                                   @RequestParam String username) {
+        userService.updateUser(id, email, username);
+        return ResponseEntity.ok("User contact information updated successfully");
     }
 
+
+    @PutMapping("/update-user/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateUserRole(@PathVariable Long id, @RequestBody String roleName) {
+        User user = userService.findUserById(id); // Find the user by ID
+        userService.updateUserRole(user.getUsername(), roleName); // Update the user's role
+        return ResponseEntity.ok("User role updated successfully");
+    }
 
 
 }

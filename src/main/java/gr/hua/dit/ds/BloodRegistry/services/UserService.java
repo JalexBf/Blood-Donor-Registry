@@ -9,6 +9,7 @@ import gr.hua.dit.ds.BloodRegistry.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,16 +48,25 @@ public class UserService {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
-    public User updateUser(User user, boolean isAdmin) {
-        User existingUser = userRepository.findById(user.getUserId())
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + user.getUserId()));
+    public void updateUserRole(String username, String roleName) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found with name: " + roleName));
 
-        if (isAdmin && user.getRole() != null) {
-            existingUser.setRole(user.getRole()); // Allow role change if admin
-        }
+        user.setRole(role);
+        userRepository.save(user);
+    }
 
-        existingUser.setEmail(user.getEmail());
-        existingUser.setUsername(user.getUsername());
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Transactional
+    public User updateUser(Long userId, String newEmail, String newUsername) {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+
+        existingUser.setEmail(newEmail);
+        existingUser.setUsername(newUsername);
 
         return userRepository.save(existingUser);
     }

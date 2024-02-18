@@ -17,6 +17,10 @@ public class RegistrationService {
     @Autowired
     private RegistrationRepository registrationRepository;
 
+    @Autowired
+    private UserService userService;
+
+
     @Transactional
     public Registration createRegistration(Registration registration) {
         return registrationRepository.save(registration);
@@ -34,8 +38,14 @@ public class RegistrationService {
     public Registration approveRegistration(Long registrationId) {
         Registration registration = registrationRepository.findById(registrationId)
                 .orElseThrow(() -> new NotFoundException("Registration not found with id: " + registrationId));
+
         registration.setStatus(Status.APPROVED);
-        return registrationRepository.save(registration);
+        Registration savedRegistration = registrationRepository.save(registration);
+
+        // Update the applicant's role to BLOOD_DONOR upon approval
+        userService.updateUserRole(registration.getBloodDonor().getUsername(), "BLOOD_DONOR");
+
+        return savedRegistration;
     }
 
 
