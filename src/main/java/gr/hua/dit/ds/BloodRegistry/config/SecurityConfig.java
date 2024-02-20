@@ -71,7 +71,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/users/**").hasRole("USER")
+                        .requestMatchers("/citizens/**").hasRole("CITIZEN")
                         .requestMatchers("/blooddonor/**").hasRole("BLOOD_DONOR")
                         .requestMatchers("/secretariat/**").hasRole("SECRETARIAT")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

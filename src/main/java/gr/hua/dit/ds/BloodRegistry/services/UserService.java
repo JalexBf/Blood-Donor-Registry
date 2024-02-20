@@ -35,40 +35,55 @@ public class UserService {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
-    public User createUser(User user, Roles role) {
-        Optional<Role> roleOptional = roleRepository.findByName(role.name());
-        if (!roleOptional.isPresent()) {
-            throw new NotFoundException("Role not found: " + role);
-        }
-        user.setRole(roleOptional.get());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Transactional
-    public void updateUserRole(String username, String roleName) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    public User createUser(User newUser, String roleName) {
+        // Find the role in the database
         Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new IllegalArgumentException("Role not found with name: " + roleName));
+                .orElseThrow(() -> new RuntimeException("Error: Role " + roleName + " is not found."));
 
-        user.setRole(role);
-        userRepository.save(user);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        // Assign role to the user
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        newUser.setRoles(roles);
+
+        return userRepository.save(newUser);
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
-    public User updateUser(Long userId, String newEmail, String newUsername) {
-        User existingUser = userRepository.findById(userId)
+    public void addUserRole(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
 
-        existingUser.setEmail(newEmail);
-        existingUser.setUsername(newUsername);
+        Role bloodDonorRole = roleRepository.findByName(Roles.ROLE_BLOOD_DONOR.name())
+                .orElseThrow(() -> new NotFoundException("Role ROLE_BLOOD_DONOR not found"));
 
-        return userRepository.save(existingUser);
+        // Check the user already has the blood donor role
+        boolean hasBloodDonorRole = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(Roles.ROLE_BLOOD_DONOR.name()));
+
+        // Only add the blood donor role if the user doesn't already have it
+        if (!hasBloodDonorRole) {
+            user.getRoles().add(bloodDonorRole);
+            userRepository.save(user);
+        }
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_CITIZEN')")
+    @Transactional
+    public void changeUserPassword(Long userId, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+
+        // Verify old password
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Invalid old password.");
+        }
+
+        // Update to the new password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
 
@@ -78,36 +93,23 @@ public class UserService {
     }
 
 
-    public List<User> findAllDonors() {
-        Role donorRole = roleRepository.findByName(Roles.ROLE_BLOOD_DONOR.name()).orElseThrow();
-        return userRepository.findAllByRole(donorRole);
-    }
-
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Transactional
-    public void deleteUser(Long id) {
-
-        userRepository.deleteById(id);
-    }
-
-
     public boolean existsByEmail(String username) {
         return userRepository.existsByEmail(username);
     }
 
 
-    public void changePassword(Long userId, String newPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        user.setPassword(passwordEncoder.encode(newPassword)); // Encrypt new password
-        user.setPasswordLastChangedDate(LocalDate.now());
-        userRepository.save(user);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Iterable<User> findAllUsers() {
+        return userRepository.findAll();
     }
 
 
-    public Iterable<User> findAllUsers() {
-        return userRepository.findAll();
+    // For scalability purposes
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Transactional
+    public void deleteUser(Long id) {
+
+        userRepository.deleteById(id);
     }
 }
 

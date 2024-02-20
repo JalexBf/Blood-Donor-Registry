@@ -1,10 +1,14 @@
 package gr.hua.dit.ds.BloodRegistry.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.services.BloodDonorService;
+
+import java.util.List;
 
 
 @RestController
@@ -14,28 +18,36 @@ public class BloodDonorController {
     @Autowired
     private BloodDonorService bloodDonorService;
 
-    @PostMapping
-    public ResponseEntity<BloodDonor> createBloodDonor(@RequestBody BloodDonor bloodDonor) {
-        return ResponseEntity.ok(bloodDonorService.createBloodDonor(bloodDonor));
+
+    @PutMapping("/update/{donorId}")
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT') or hasAuthority('ROLE_BLOOD_DONOR')")
+    public ResponseEntity<BloodDonor> updateBloodDonor(@PathVariable Long donorId, @RequestBody BloodDonor donorDetails) {
+        BloodDonor updatedDonor = bloodDonorService.updateBloodDonor(donorId, donorDetails.getEmail(), donorDetails.getRegion(), donorDetails.getPhone());
+        return new ResponseEntity<>(updatedDonor, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BloodDonor> updateBloodDonor(@PathVariable Long id, @RequestBody BloodDonor bloodDonor) {
-        bloodDonor.setUserId(id); // Assuming setUser_id is the method to set ID in BloodDonor
-        return ResponseEntity.ok(bloodDonorService.updateBloodDonor(bloodDonor));
+
+    @GetMapping("/searchByAmka")
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
+    public ResponseEntity<BloodDonor> getBloodDonorByAmka(@RequestParam Long amka) {
+        BloodDonor donor = bloodDonorService.findBloodDonorByAmka(amka);
+        return new ResponseEntity<>(donor, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BloodDonor> getBloodDonor(@PathVariable Long id) {
-        return bloodDonorService.findBloodDonorById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+    @GetMapping("/eligibleForDonation")
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
+    public ResponseEntity<List<BloodDonor>> getEligibleDonors() {
+        List<BloodDonor> eligibleDonors = bloodDonorService.findEligibleDonorsForNotification();
+        return new ResponseEntity<>(eligibleDonors, HttpStatus.OK);
     }
+
 
     @GetMapping
     public ResponseEntity<Iterable<BloodDonor>> getAllBloodDonors() {
         return ResponseEntity.ok(bloodDonorService.findAllBloodDonors());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBloodDonor(@PathVariable Long id) {

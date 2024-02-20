@@ -1,6 +1,5 @@
 package gr.hua.dit.ds.BloodRegistry.security;
 
-import gr.hua.dit.ds.BloodRegistry.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

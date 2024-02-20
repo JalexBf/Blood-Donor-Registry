@@ -60,22 +60,42 @@ public class BloodDonor extends User implements IBloodDonor {
     private LocalDate lastDonationDate;
 
 
+    @Override
+    public BloodType getBloodType() {
+        return null;
+    }
+
+
+    @Override
+    public void setBloodType(BloodType bloodtype) {
+
+    }
+
     public void setLastDonationDate(LocalDate lastDonationDate) {
         this.lastDonationDate = lastDonationDate;
     }
 
+
+    @Override
+    public void setapplication(Application application) {
+        this.application = application;
+        if (application != null && application.getBloodDonor() != this) {
+            application.setBloodDonor(this);
+        }
+    }
+
+
+    @Override
+    public Application getapplication() {
+        return this.application;
+    }
+
+
     @OneToMany(mappedBy = "bloodDonor")
     private List<Donation> donations;
 
+
     @OneToOne(mappedBy = "bloodDonor", cascade = CascadeType.ALL)
-    private Registration registration;
+    private Application application;
 
-    @Override
-    public BloodType getBloodType() {
-        return this.bloodtype;
-    }
-
-    public void setBloodType(BloodType bloodtype) {
-        this.bloodtype = bloodtype;
-    }
 }

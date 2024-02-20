@@ -3,7 +3,9 @@ package gr.hua.dit.ds.BloodRegistry.controllers;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Donation;
 import gr.hua.dit.ds.BloodRegistry.services.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,15 +16,12 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
-    @PostMapping
-    public ResponseEntity<Donation> createDonation(@RequestBody Donation donation) {
-        return ResponseEntity.ok(donationService.createDonation(donation));
-    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Donation> updateDonation(@PathVariable Long id, @RequestBody Donation donation) {
-        donation.setDonationId(id);
-        return ResponseEntity.ok(donationService.updateDonation(donation));
+    @PostMapping("/register")
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
+    public ResponseEntity<Donation> registerDonation(@RequestParam Long amka, @RequestBody Donation donation) {
+        Donation registeredDonation = donationService.registerDonation(amka, donation);
+        return new ResponseEntity<>(registeredDonation, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

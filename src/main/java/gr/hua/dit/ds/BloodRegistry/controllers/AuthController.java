@@ -6,7 +6,7 @@ import gr.hua.dit.ds.BloodRegistry.payload.LoginRequest;
 import gr.hua.dit.ds.BloodRegistry.repositories.RoleRepository;
 import gr.hua.dit.ds.BloodRegistry.repositories.UserRepository;
 import gr.hua.dit.ds.BloodRegistry.security.JwtUtils;
-import gr.hua.dit.ds.BloodRegistry.services.UserDetailsImpl;
+import gr.hua.dit.ds.BloodRegistry.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

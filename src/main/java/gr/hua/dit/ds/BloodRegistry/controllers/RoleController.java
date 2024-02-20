@@ -15,16 +15,6 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody Role role) {
-        try {
-            role.setRoleId(id);
-            Role updatedRole = roleService.updateRole(role);
-            return ResponseEntity.ok(updatedRole);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRole(@PathVariable Long id) {
@@ -32,6 +22,7 @@ public class RoleController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @GetMapping
     public ResponseEntity<Iterable<Role>> getAllRoles() {

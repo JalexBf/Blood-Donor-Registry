@@ -8,8 +8,8 @@ public enum Permissions {
     UPDATE_USER,
     READ_ROLE,
     WRITE_ROLE,
-    READ_REGISTRATION,
-    APPROVE_REGISTRATION,
-    REJECT_REGISTRATION
+    READ_application,
+    APPROVE_application,
+    REJECT_application
 }
 

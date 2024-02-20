@@ -5,6 +5,7 @@ import gr.hua.dit.ds.BloodRegistry.entities.enums.Status;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Donation;
 import gr.hua.dit.ds.BloodRegistry.exceptions.InvalidRequestException;
+import gr.hua.dit.ds.BloodRegistry.exceptions.NotFoundException;
 import gr.hua.dit.ds.BloodRegistry.repositories.BloodDonorRepository;
 import gr.hua.dit.ds.BloodRegistry.repositories.DonationRepository;
 import jakarta.transaction.Transactional;
@@ -24,26 +25,17 @@ public class DonationService {
     @Autowired
     private BloodDonorRepository bloodDonorRepository;
 
+    
     @Transactional
-    public Donation createDonation(Donation donation) {
+    public Donation registerDonation(Long amka, Donation donationDetails) {
+        BloodDonor donor = bloodDonorRepository.findByAmka(amka)
+                .orElseThrow(() -> new NotFoundException("Blood Donor not found with AMKA: " + amka));
 
-        Status donorStatus = donation.getBloodDonor().getRegistration().getStatus();
-
-        if (donation.getBloodDonor().getRegistration().getStatus() != Status.APPROVED) {
-            throw new InvalidRequestException("Donor is not approved for donation.");
-        }
-        BloodDonor donor = donation.getBloodDonor();
-        donor.setLastDonationDate(LocalDate.now()); // Set the current date as the last donation date
-        bloodDonorRepository.save(donor);
-
-        return donationRepository.save(donation);
+        donationDetails.setBloodDonor(donor);
+        donationDetails.setDonationDate(LocalDate.now()); // Use the current date for the donation date
+        return donationRepository.save(donationDetails);
     }
 
-
-    @Transactional
-    public Donation updateDonation(Donation donation) {
-        return donationRepository.save(donation);
-    }
 
     public Optional<Donation> findDonationById(Long id) {
         return donationRepository.findById(id);

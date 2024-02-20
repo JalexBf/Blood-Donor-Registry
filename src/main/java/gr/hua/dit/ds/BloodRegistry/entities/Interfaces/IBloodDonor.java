@@ -2,8 +2,9 @@ package gr.hua.dit.ds.BloodRegistry.entities.Interfaces;
 
 import gr.hua.dit.ds.BloodRegistry.entities.enums.BloodType;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
+import gr.hua.dit.ds.BloodRegistry.entities.model.Application;
 import gr.hua.dit.ds.BloodRegistry.entities.model.Donation;
-import gr.hua.dit.ds.BloodRegistry.entities.model.Registration;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface IBloodDonor {
     String getBloodworkFilePath();
     LocalDate getLastDonationDate();
     List<Donation> getDonations();
-    Registration getRegistration();
+    Application getapplication();
 
     // Setters
     void setFirstname(String firstname);
@@ -36,5 +37,5 @@ public interface IBloodDonor {
     void setBloodworkFilePath(String bloodworkFilePath);
     void setLastDonationDate(LocalDate lastDonationDate);
     void setDonations(List<Donation> donations);
-    void setRegistration(Registration registration);
+    void setapplication(Application application);
 }
