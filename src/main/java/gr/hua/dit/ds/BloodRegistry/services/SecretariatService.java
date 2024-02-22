@@ -24,12 +24,10 @@ public class SecretariatService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private SecretariatRepository secretariatRepository;
 
 
+    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT')")
     public List<Application> getPendingApplications() {
         return applicationService.findAllApplicationsByStatus(Status.AWAITING);
     }
@@ -54,17 +52,8 @@ public class SecretariatService {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Transactional
-    public void deleteSecretariat(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Secretariat not found with id: " + id));
 
-        // Remove Secretariat user
-        userRepository.delete(user);
-    }
-
-
+    // For scalability purposes
     public Optional<Secretariat> findSecretariatById(Long id) {
         return secretariatRepository.findById(id);
     }

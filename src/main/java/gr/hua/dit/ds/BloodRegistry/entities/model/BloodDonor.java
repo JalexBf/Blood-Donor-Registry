@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "blood_donors")
+@DiscriminatorValue("BloodDonor")
 public class BloodDonor extends User implements IBloodDonor {
 
     @Column

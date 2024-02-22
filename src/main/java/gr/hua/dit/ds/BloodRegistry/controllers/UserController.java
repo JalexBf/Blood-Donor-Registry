@@ -22,14 +22,6 @@ public class UserController {
     private UserService userService;
 
 
-    @PostMapping("/create")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<User> createUser(@RequestBody User newUser, @RequestParam String roleName) {
-        User user = userService.createUser(newUser, roleName);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<User>> findAllUsers() {
@@ -38,12 +30,6 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
-    }
 
 
     @GetMapping("/{id}")

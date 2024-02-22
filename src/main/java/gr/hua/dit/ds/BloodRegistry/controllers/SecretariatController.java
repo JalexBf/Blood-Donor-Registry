@@ -47,13 +47,6 @@ public class SecretariatController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void deleteSecretariat(@PathVariable Long id) {
-        secretariatService.deleteSecretariat(id);
-    }
-
-
     @GetMapping("/findById/{id}")
     @PreAuthorize("hasAuthority('ROLE_SECRETARIAT') or hasAuthority('ROLE_ADMIN')")
     public Secretariat findsecretariatById(@PathVariable Long id) {

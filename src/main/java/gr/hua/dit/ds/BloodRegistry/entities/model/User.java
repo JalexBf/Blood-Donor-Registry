@@ -20,6 +20,8 @@ import java.util.Set;
 @Entity
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     @Id

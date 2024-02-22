@@ -33,22 +33,6 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Transactional
-    public User createUser(User newUser, String roleName) {
-        // Find the role in the database
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RuntimeException("Error: Role " + roleName + " is not found."));
-
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        // Assign role to the user
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        newUser.setRoles(roles);
-
-        return userRepository.save(newUser);
-    }
-
 
     @Transactional
     public void addUserRole(Long userId) {
@@ -87,29 +71,24 @@ public class UserService {
     }
 
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
     }
 
 
-    public boolean existsByEmail(String username) {
-        return userRepository.existsByEmail(username);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<User> findUsersByRoleName(String roleName) {
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found with name: " + roleName));
+        return userRepository.findAllByRoles(role);
     }
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Iterable<User> findAllUsers() {
         return userRepository.findAll();
-    }
-
-
-    // For scalability purposes
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Transactional
-    public void deleteUser(Long id) {
-
-        userRepository.deleteById(id);
     }
 }
 

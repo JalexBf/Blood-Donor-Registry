@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.controllers;
 
+import gr.hua.dit.ds.BloodRegistry.DTO.BloodDonorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +21,10 @@ public class BloodDonorController {
 
 
     @PutMapping("/update/{donorId}")
-    @PreAuthorize("hasAuthority('ROLE_SECRETARIAT') or hasAuthority('ROLE_BLOOD_DONOR')")
-    public ResponseEntity<BloodDonor> updateBloodDonor(@PathVariable Long donorId, @RequestBody BloodDonor donorDetails) {
-        BloodDonor updatedDonor = bloodDonorService.updateBloodDonor(donorId, donorDetails.getEmail(), donorDetails.getRegion(), donorDetails.getPhone());
-        return new ResponseEntity<>(updatedDonor, HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ROLE_BLOOD_DONOR')")
+    public ResponseEntity<BloodDonor> updateBloodDonor(@PathVariable Long donorId, @RequestBody BloodDonorDTO donorDetails) {
+        BloodDonor updatedDonor = bloodDonorService.updateBloodDonor(donorId, donorDetails);
+        return ResponseEntity.ok(updatedDonor);
     }
 
 

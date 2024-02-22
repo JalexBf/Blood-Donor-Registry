@@ -1,5 +1,6 @@
 package gr.hua.dit.ds.BloodRegistry.services;
 
+import gr.hua.dit.ds.BloodRegistry.DTO.BloodDonorDTO;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Roles;
 import gr.hua.dit.ds.BloodRegistry.entities.enums.Sex;
 import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -41,22 +44,23 @@ public class BloodDonorService {
 
     @PreAuthorize("hasAuthority('ROLE_BLOOD_DONOR')")
     @Transactional
-    public BloodDonor updateBloodDonor(Long donorId, String newEmail, String newRegion, String newPhone) {
+    public BloodDonor updateBloodDonor(Long donorId, BloodDonorDTO updateDTO) {
         BloodDonor existingDonor = bloodDonorRepository.findById(donorId)
                 .orElseThrow(() -> new NotFoundException("Blood Donor not found with id: " + donorId));
 
         // Check if the new email is already used by another user
-        boolean emailExists = userRepository.existsByEmail(newEmail);
-        if (emailExists && !existingDonor.getEmail().equals(newEmail)) {
+        boolean emailExists = userRepository.existsByEmail(updateDTO.getEmail());
+        if (emailExists && !existingDonor.getEmail().equals(updateDTO.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        existingDonor.setEmail(newEmail);
-        existingDonor.setRegion(newRegion);
-        existingDonor.setPhone(newPhone);
+        existingDonor.setEmail(updateDTO.getEmail());
+        existingDonor.setRegion(updateDTO.getRegion());
+        existingDonor.setPhone(updateDTO.getPhone());
 
         return bloodDonorRepository.save(existingDonor);
     }
+
 
 
     public BloodDonor findBloodDonorByAmka(Long amka) {
@@ -65,18 +69,22 @@ public class BloodDonorService {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_BLOOD_DONOR')")
     @Transactional
-    public void deleteBloodDonor(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+    public void deleteBloodDonor(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
 
-        Role bloodDonorRole = roleRepository.findByName(Roles.ROLE_BLOOD_DONOR.name())
-                .orElseThrow(() -> new NotFoundException("Role ROLE_BLOOD_DONOR not found"));
+        // Fetch roles
+        Role citizenRole = roleRepository.findByName(Roles.ROLE_CITIZEN.name())
+                .orElseThrow(() -> new NotFoundException("Role not found: " + Roles.ROLE_CITIZEN.name()));
 
-        user.getRoles().remove(bloodDonorRole);
+        // Set only the citizen role
+        user.setRoles(new HashSet<>(Set.of(citizenRole)));
+
         userRepository.save(user);
     }
+
 
 
     public List<BloodDonor> findEligibleDonorsForNotification() {

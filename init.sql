@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS roles (
-                                     role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     name VARCHAR(50) NOT NULL
+    role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
     );
 
 
@@ -10,8 +10,8 @@ SELECT 'ROLE_ADMIN'
     WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'ROLE_ADMIN');
 
 INSERT INTO roles (name)
-SELECT 'CITIZEN'
-    WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'CITIZEN');
+SELECT 'ROLE_CITIZEN'
+    WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'ROLE_CITIZEN');
 
 INSERT INTO roles (name)
 SELECT 'ROLE_BLOOD_DONOR'
@@ -24,8 +24,8 @@ SELECT 'ROLE_SECRETARIAT'
 
 -- User Table
 CREATE TABLE IF NOT EXISTS users (
-                                     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     username VARCHAR(15) NOT NULL,
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(15) NOT NULL,
     password VARCHAR(1500) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     is_account_non_expired BOOLEAN NOT NULL DEFAULT FALSE,
@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS users (
     is_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     password_last_changed_date DATE,
     failed_login_attempts INT DEFAULT 0,
-    account_lock_date DATE
+    account_lock_date DATE,
+    dtype VARCHAR(50) NOT NULL
     );
 
 
@@ -51,9 +52,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Blood Donors Table
 CREATE TABLE IF NOT EXISTS blood_donors (
-                                            donor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            user_id BIGINT NOT NULL,
-                                            firstname VARCHAR(50) NOT NULL,
+    donor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
     bloodtype VARCHAR(20) NOT NULL,
     sex VARCHAR(20) NOT NULL,
@@ -68,9 +69,9 @@ CREATE TABLE IF NOT EXISTS blood_donors (
 
 -- Secretariats Table
 CREATE TABLE IF NOT EXISTS secretariats (
-                                            secretariat_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            user_id BIGINT NOT NULL,
-                                            firstname VARCHAR(50) NOT NULL,
+    secretariat_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
