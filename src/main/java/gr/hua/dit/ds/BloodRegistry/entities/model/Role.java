@@ -33,11 +33,4 @@ public class Role implements IRole {
     private Roles name;
 
 
-    @ElementCollection(targetClass = Permissions.class)
-    @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "permission")
-    @NotNull
-    private Set<Permissions> permissions;
-
 }

@@ -19,7 +19,6 @@ import java.util.Set;
 @Entity
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "Secretariats")
-@DiscriminatorValue("Secretariat")
 public class Secretariat extends User implements ISecretariat {
 
     @Column

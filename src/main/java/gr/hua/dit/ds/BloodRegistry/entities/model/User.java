@@ -18,9 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(callSuper=false)
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
@@ -53,8 +52,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
 
-
     private Set<Role> roles = new HashSet<>();
+
 
     private boolean accountNonExpired;
     private boolean accountNonLocked;

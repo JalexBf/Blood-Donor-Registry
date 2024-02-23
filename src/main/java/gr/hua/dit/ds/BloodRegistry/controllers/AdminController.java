@@ -1,12 +1,8 @@
 package gr.hua.dit.ds.BloodRegistry.controllers;
 
 import gr.hua.dit.ds.BloodRegistry.DTO.UserDTO;
-import gr.hua.dit.ds.BloodRegistry.entities.enums.Roles;
-import gr.hua.dit.ds.BloodRegistry.entities.model.BloodDonor;
 import gr.hua.dit.ds.BloodRegistry.entities.model.User;
 import gr.hua.dit.ds.BloodRegistry.services.AdminService;
-import gr.hua.dit.ds.BloodRegistry.services.BloodDonorService;
-import gr.hua.dit.ds.BloodRegistry.services.SecretariatService;
 import gr.hua.dit.ds.BloodRegistry.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +40,7 @@ public class AdminController {
     }
 
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/createUser")
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {

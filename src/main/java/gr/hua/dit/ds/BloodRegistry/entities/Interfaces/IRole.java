@@ -8,10 +8,8 @@ import java.util.Set;
 public interface IRole {
 
     Long getRoleId();
-    Roles getName(); // Change the return type to Roles enum
-    Set<Permissions> getPermissions();
+    Roles getName();
 
     void setRoleId(Long roleId);
-    void setName(Roles name); // Change the parameter type to Roles enum
-    void setPermissions(Set<Permissions> permissions);
+    void setName(Roles name);
 }
