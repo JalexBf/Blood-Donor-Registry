@@ -66,4 +66,4 @@ CREATE TABLE registrations (
 );
 
 
-INSERT INTO users (username, email, password) VALUES ('jason', 'it218142@hua.gr', '123456789');
+INSERT INTO users (username, email, password, role) VALUES ('jason', 'it218142@hua.gr', '123456789', 'ADMIN');
